@@ -44,8 +44,9 @@ mpl.rcParams.update({
 [Usage and code structure]{.big-sub}
 :::
 
-::: {.absolute bottom=90 left=100}
-[Stephen Green, Cecilia Fabbri, Matt Mould, Lorenzo Pompili]{.byline}\
+::: {.absolute bottom=80 left=100}
+[Stephen Green]{.byline}\
+[with Cecilia Fabbri, Matt Mould, and Lorenzo Pompili]{.coauthors}\
 [CCA, Flatiron Institute — 13 November 2026]{.team}
 :::
 
@@ -144,6 +145,7 @@ jupyter lab DINGO_Tutorial.ipynb
 - [uv](https://docs.astral.sh/uv/) fetches Python 3.12 if needed. Without uv, use `python3.12 -m venv` and `pip install` (see README).
 - `constraints.txt` pins the versions `dingo-gw` 0.10.3 was tested with.
 - Section 6 downloads the [Dingo]{.sc}-T1 model (641 MB) from Zenodo: start early.
+- Notebook by Annalena Kofler, updated for `dingo-gw` 0.10.3.
 :::
 :::
 ::: {}
@@ -781,7 +783,7 @@ About a minute of CPU time for a GW170817-like event.
 
 : {.notebook-map}
 
-Updated for `dingo-gw` 0.10.3. The full run takes ~25 min on a laptop CPU.
+Notebook by Annalena Kofler, updated for `dingo-gw` 0.10.3. The full run takes ~25 min on a laptop CPU.
 :::
 ::: {}
 ![](images/tutorial_qr.svg){width=400 style="margin-top: 20px;"}

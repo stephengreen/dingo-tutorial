@@ -5,7 +5,7 @@ Quarto (reveal.js) slides for the DINGO tutorial (CCA, Flatiron Institute, 13 No
 ## Editing
 
 - Text and layout: `index.qmd`; styling: `theme.scss`. Preview with `quarto preview slides` from the repository root.
-- Executed code cells are frozen: their outputs are stored in `_freeze/`, so rendering needs only [Quarto](https://quarto.org) (no Python). If you edit a code cell, re-render locally with the tutorial environment, after running the notebook so that its outputs exist:
+- Executed code cells are frozen in `_freeze/`, so CI renders with [Quarto](https://quarto.org) alone. Note that the cache stores the whole executed document: after **any** edit to `index.qmd` (text included), re-render locally with the tutorial environment and commit the updated `_freeze/`, or CI will fail. Run the notebook first so that its outputs exist:
 
   ```sh
   DINGO_TUTORIAL_RUN_DIR=/path/where/the/notebook/ran QUARTO_PYTHON=/path/to/venv/bin/python quarto render slides
