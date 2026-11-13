@@ -171,6 +171,6 @@ cython_debug/
 05_pretrained_model/
 
 # Quarto build output (built by CI)
-slides/_output/
-slides/.quarto/
+slides/*/_output/
+slides/*/.quarto/
 **/*.quarto_ipynb

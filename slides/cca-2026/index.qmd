@@ -611,48 +611,55 @@ result.samples[["chirp_mass", "log_prob", "weights"]]
 ```{python}
 #| echo: false
 #| fig-width: 7.6
-#| fig-height: 6.6
+#| fig-height: 6.8
 #| fig-dpi: 110
 import glob
-import matplotlib.pyplot as plt
 from scipy.stats import gaussian_kde
 
 res = {d: Result(file_name=glob.glob(f"05_pretrained_model/GW190701_203306/{d}/result/"
                                      "*importance_sampling.hdf5")[0]).samples for d in ["H1", "H1_L1"]}
-params = [("chirp_mass", r"$\mathcal{M}_c\ [M_\odot]$", 1.0), ("mass_ratio", r"$q$", 1.0),
-          ("luminosity_distance", r"$d_L\ [\mathrm{Gpc}]$", 1e-3), ("dec", r"$\delta\ [\mathrm{rad}]$", 1.0)]
-style = {"H1": dict(color="tab:orange", label=r"$\mathrm{H1}$", fill=False),
-         "H1_L1": dict(color="tab:blue", label=r"$\mathrm{H1} + \mathrm{L1}$", fill=True)}
+style = {"H1": dict(color="tab:orange", label=r"$\mathrm{H1}$", fill=False, alpha=0.5),
+         "H1_L1": dict(color="tab:blue", label=r"$\mathrm{H1} + \mathrm{L1}$", fill=True, alpha=0.35)}
 
 def wquantile(x, w, q):
     i = np.argsort(x); c = np.cumsum(w[i]); c /= c[-1]
     return np.interp(q, c, x[i])
 
-fig, axes = plt.subplots(2, 2, figsize=(7.6, 6.6))
-for ax, (p, lab, scale) in zip(axes.flat, params):
+fig = plt.figure(figsize=(7.6, 6.8))
+gs = fig.add_gridspec(2, 3, height_ratios=[1, 1.55], hspace=0.38, wspace=0.12)
+for k, (p, lab, scale) in enumerate([("chirp_mass", r"$\mathcal{M}_c\ [M_\odot]$", 1.0), ("mass_ratio", r"$q$", 1.0),
+                                     ("luminosity_distance", r"$d_L\ [\mathrm{Gpc}]$", 1e-3)]):
+    ax = fig.add_subplot(gs[0, k])
     lo = min(wquantile(s[p].to_numpy() * scale, s["weights"].to_numpy(), 0.005) for s in res.values())
     hi = max(wquantile(s[p].to_numpy() * scale, s["weights"].to_numpy(), 0.995) for s in res.values())
     if p == "mass_ratio":
         hi = min(hi, 1.0)
-    grid = np.linspace(lo, hi, 400)
+    grid = np.linspace(lo, hi, 300)
     for d, s in res.items():
         kde = gaussian_kde(s[p].to_numpy() * scale, weights=s["weights"].to_numpy())
         y = kde(grid) + (kde(2.0 - grid) if p == "mass_ratio" else 0)  # reflect at q = 1
-        st = style[d]
-        if st["fill"]:
-            ax.fill_between(grid, y, alpha=0.22, color=st["color"], lw=0)
-        ax.plot(grid, y, lw=3, color=st["color"], label=st["label"])
-    ax.set_xlabel(lab, fontsize=26); ax.tick_params(labelsize=21)
-    ax.set_yticks([]); ax.set_ylim(bottom=0); ax.set_xlim(lo, hi); ax.grid(False)
+        if style[d]["fill"]:
+            ax.fill_between(grid, y, alpha=0.22, color=style[d]["color"], lw=0)
+        ax.plot(grid, y, lw=2.6, color=style[d]["color"])
+    ax.set_xlabel(lab, fontsize=22); ax.tick_params(labelsize=16); ax.set_yticks([])
+    ax.set_ylim(bottom=0); ax.set_xlim(lo, hi); ax.grid(False); ax.locator_params(axis="x", nbins=3)
     for side in ["left", "right", "top"]:
         ax.spines[side].set_visible(False)
-    ax.locator_params(axis="x", nbins=4)
-handles, labels_ = axes[0, 0].get_legend_handles_labels()
-fig.legend(handles, labels_, loc="upper center", ncol=2, frameon=False, fontsize=24,
-           handlelength=1.6, columnspacing=2.0, bbox_to_anchor=(0.5, 1.0))
-fig.tight_layout(rect=(0, 0, 1, 0.92), h_pad=1.8, w_pad=1.8)
+
+# Sky position: importance-resampled samples, Mollweide projection
+ax = fig.add_subplot(gs[1, :], projection="mollweide")
+rng = np.random.default_rng(1)
+for d in ["H1", "H1_L1"]:
+    s = res[d]; w = s["weights"].to_numpy()
+    idx = rng.choice(len(s), size=4000, p=w / w.sum())
+    ra = np.remainder(s["ra"].to_numpy()[idx] + np.pi, 2 * np.pi) - np.pi
+    ax.scatter(-ra, s["dec"].to_numpy()[idx], s=4, alpha=style[d]["alpha"], color=style[d]["color"],
+               lw=0, rasterized=True)
+ax.grid(True, lw=0.6, alpha=0.5); ax.set_xticklabels([]); ax.set_yticklabels([])
+handles = [plt.Line2D([], [], color=style[d]["color"], lw=4, label=style[d]["label"]) for d in style]
+fig.legend(handles=handles, loc="upper center", ncol=2, frameon=False, fontsize=24, bbox_to_anchor=(0.5, 1.02))
 ```
-[GW190701_203306, analyzed by the same network with H1 only and with H1 + L1 (importance-weighted posteriors).]{.caption}
+[GW190701_203306, analyzed by the same network with H1 only and with H1 + L1. Bottom: sky position (importance-resampled samples).]{.caption}
 :::
 :::
 :::
