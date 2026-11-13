@@ -135,15 +135,13 @@ Use [Dingo]{.sc} API or INI file
 ```bash
 git clone https://github.com/stephengreen/tutorial-dingo-introduction
 cd tutorial-dingo-introduction
-uv venv --python 3.12 && source .venv/bin/activate
-uv pip install dingo-gw==0.10.3 jupyterlab -c constraints.txt
-jupyter lab DINGO_Tutorial.ipynb
+uv sync
+uv run jupyter lab DINGO_Tutorial.ipynb
 ```
 :::
 
 ::: {.compact style="margin-top: 36px;"}
-- [uv](https://docs.astral.sh/uv/) fetches Python 3.12 if needed. Without uv, use `python3.12 -m venv` and `pip install` (see README).
-- `constraints.txt` pins the versions `dingo-gw` 0.10.3 was tested with.
+- [uv](https://docs.astral.sh/uv/) installs the versions `dingo-gw` 0.10.3 was tested with, and fetches Python 3.12 if needed. Without uv: `pip` with `constraints.txt` (see README).
 - Section 6 downloads the [Dingo]{.sc}-T1 model (641 MB) from Zenodo: start early.
 - Notebook by Annalena Kofler, updated for `dingo-gw` 0.10.3.
 :::

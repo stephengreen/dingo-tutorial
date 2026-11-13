@@ -13,11 +13,10 @@ To get started quickly, run the tutorial in Google Colab by clicking the button 
 
 To run it locally (which may be faster), create a Python environment with the `dingo-gw` package. The file `constraints.txt` pins the dependencies to the versions `dingo-gw` 0.10.3 was tested with (from its `uv.lock`). Without it, newer releases are installed; in particular, `bilby_pipe>1.8` is not yet compatible with `dingo_pipe`.
 
-We recommend [`uv`](https://docs.astral.sh/uv/), which also fetches a suitable Python version:
+We recommend [`uv`](https://docs.astral.sh/uv/), which installs the tested versions from `uv.lock` (and fetches Python 3.12 if needed):
 ```
-uv venv --python 3.12
-source .venv/bin/activate
-uv pip install dingo-gw==0.10.3 jupyterlab -c constraints.txt
+uv sync
+uv run jupyter lab DINGO_Tutorial.ipynb
 ```
 
 Alternatively, with `pip` (requires Python 3.11 or 3.12 for the constraints):
