@@ -17,6 +17,9 @@ pd.set_option("display.max_rows", 6, "display.max_columns", 6, "display.precisio
 # Folder where the notebook was run (its outputs are read here). Only needed when re-executing;
 # the rendered outputs are frozen in _freeze/.
 os.chdir(os.environ.get("DINGO_TUTORIAL_RUN_DIR", "../.."))  # default: repository root
+# Fixed seeds, so that re-rendering gives the same injection and samples
+import torch, bilby.core.utils.random
+np.random.seed(1); torch.manual_seed(1); bilby.core.utils.random.seed(1)
 import builtins, re
 _print = getattr(builtins, "_orig_print", builtins.print)  # survive kernel reuse
 builtins._orig_print = _print
@@ -458,23 +461,20 @@ sampler.samples
 ::: {.jup}
 ```{python}
 #| output: false
-from dingo.gw.result import Result
-
-path = "05_pretrained_model/GW190701_203306/H1_L1/result/"
-result = Result(file_name=path + "GW190701_203306_data0_"
-                "1246048404-56_importance_sampling.hdf5")
+result = sampler.to_result()  # from the previous slide
 ```
 
 ::: {.cellwrap}
 [Importance sampling]{.tag}
 
 ```{python}
+result.importance_sample(num_processes=8)
 result.print_summary()
 ```
 :::
 
 ```{python}
-result.samples[["chirp_mass", "log_prob", "weights"]]
+result.samples[["chirp_mass", "mass_ratio", "weights"]]
 ```
 :::
 :::
@@ -615,6 +615,7 @@ result.samples[["chirp_mass", "log_prob", "weights"]]
 #| fig-dpi: 110
 import glob
 from scipy.stats import gaussian_kde
+from dingo.gw.result import Result
 
 res = {d: Result(file_name=glob.glob(f"05_pretrained_model/GW190701_203306/{d}/result/"
                                      "*importance_sampling.hdf5")[0]).samples for d in ["H1", "H1_L1"]}
