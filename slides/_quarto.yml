@@ -1,0 +1,28 @@
+project:
+  type: default
+  output-dir: _output
+
+execute:
+  freeze: auto
+  daemon: false
+  warning: false
+  echo: true
+
+format:
+  revealjs:
+    theme: [default, theme.scss]
+    width: 1920
+    height: 1080
+    margin: 0
+    center: false
+    slide-number: c
+    controls: false
+    menu: false
+    progress: false
+    transition: none
+    highlight-style: github
+    embed-resources: true
+
+    html-math-method: mathml
+    code-copy: false
+    code-line-numbers: false

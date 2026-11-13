@@ -1,0 +1,44 @@
+name: Slides
+
+# Builds the Quarto slides in slides/ from the frozen outputs in slides/_freeze/
+# (no Python or dingo needed). The HTML is uploaded as an artifact on every run and,
+# if the repository variable DEPLOY_PAGES is "true", published to GitHub Pages.
+
+on:
+  push:
+    branches: [main]
+    paths: ["slides/**", ".github/workflows/slides.yml"]
+  pull_request:
+    paths: ["slides/**", ".github/workflows/slides.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.10.18
+      - name: Render slides (frozen outputs; no code execution)
+        run: quarto render slides
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: slides/_output
+
+  deploy:
+    if: github.event_name != 'pull_request' && vars.DEPLOY_PAGES == 'true'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

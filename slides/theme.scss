@@ -1,0 +1,260 @@
+/*-- scss:defaults --*/
+// Layout system on a 1920 x 1080 canvas:
+//   title band (title + subtitle) at the top, then a body region that fills the rest of
+//   the slide and centers its content vertically. Layout variants: .body (text),
+//   .grid2 (text | code), .grid2.wide-right, .steps (key steps with brackets).
+$font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-monospace: "SF Mono", Menlo, Monaco, monospace;
+$presentation-heading-font: $font-family-sans-serif;
+$presentation-font-size-root: 38px;
+$presentation-heading-color: #111;
+$presentation-heading-font-weight: 700;
+$presentation-heading-line-height: 1.05;
+$presentation-h2-font-size: 76px;
+$body-color: #1a1a1a;
+$body-bg: #fff;
+$link-color: #1a1a1a;
+$code-block-font-size: 21px;
+
+$accent: #3274b5;        // Dingo blue (headings in the original deck)
+$step-green: #54ae32;
+$step-orange: #e2792e;
+$step-blue: #479ff8;
+$callout: #81d653;
+$muted: #6b7280;
+$darcula-bg: #2b2b2b;
+
+/*-- scss:rules --*/
+.reveal .slides > section,
+.reveal .slides > section > section {
+  box-sizing: border-box;
+  height: 1080px;
+  padding: 72px 100px 0 100px !important;
+  text-align: left;
+}
+
+.reveal h2 { font-size: 76px; margin: 0; letter-spacing: -0.8px; }
+.reveal .sub {
+  display: block;
+  font-size: 46px;
+  font-weight: 700;
+  color: $accent;
+  line-height: 1.15;
+  margin-top: 6px;
+}
+.reveal .sc { font-variant: small-caps; }
+
+// Body region: fills the slide below the title band; content centered vertically.
+.reveal .body {
+  position: absolute;
+  top: 250px; left: 100px; right: 100px; bottom: 60px;
+  display: flex; flex-direction: column; justify-content: flex-start;
+}
+.reveal .body.center { justify-content: center; }
+.reveal .grid2 {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  column-gap: 72px;
+  align-items: start;
+  max-height: 100%;
+  min-height: 0;
+  > div { min-height: 0; max-height: 100%; }
+}
+.reveal .grid2.mid { align-items: center; height: 100%; }
+.reveal .grid2.even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.reveal .grid2.wide-left { grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); }
+.reveal .grid2.text-heavy { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); }
+
+// Text
+.reveal p, .reveal li { line-height: 1.32; }
+.reveal ul, .reveal ol { margin: 0 0 0 44px; }
+.reveal ul > li { list-style-type: "•  "; margin-bottom: 24px; }
+.reveal ul ul, .reveal ol ul { margin-top: 14px; margin-left: 30px; }
+.reveal ul ul > li { list-style-type: "–  "; margin-bottom: 12px; font-size: 0.9em; }
+.reveal ol > li { margin-bottom: 24px; padding-left: 8px; }
+.reveal ol ol { list-style-type: lower-alpha; margin-top: 12px; }
+.reveal ol ol > li { margin-bottom: 10px; font-size: 0.86em; }
+.reveal li:last-child { margin-bottom: 0; }
+.reveal .compact { font-size: 32px; }
+.reveal .compact li { margin-bottom: 16px; }
+.reveal .large > ul > li { margin-bottom: 36px; }
+.reveal strong { font-weight: 700; }
+.reveal .accent { color: $accent; font-weight: 700; }
+.reveal .green { color: $step-green; font-weight: 700; }
+.reveal .orange { color: $step-orange; font-weight: 700; }
+.reveal .sblue { color: $step-blue; font-weight: 700; }
+.reveal .muted { color: $muted; }
+.reveal code { font-family: $font-family-monospace; color: inherit; font-size: 0.88em; }
+.reveal a { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.reveal .caption { font-size: 30px; color: $muted; margin-top: 18px; }
+
+// Labels attached to code panels (successor of the green Keynote callouts)
+.reveal .tag {
+  display: inline-block;
+  background: $step-green;
+  color: #fff;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.2;
+  padding: 5px 14px;
+  border-radius: 6px;
+  margin: 10px 0 6px 0;
+}
+
+// Dark config panels (Darcula colors)
+.reveal .darcula {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  div.sourceCode, pre { background: $darcula-bg !important; border: none !important; margin: 0; box-shadow: none; width: 100%; max-height: none; }
+  pre code {
+    font-size: 22px;
+    line-height: 1.35;
+    color: #a9b7c6;
+    background: $darcula-bg;
+    padding: 22px 28px;
+    max-height: none;
+    overflow: hidden;
+    white-space: pre;
+  }
+  code span { color: #a9b7c6; font-style: normal; font-weight: normal; }
+  code span.fu, code span.kw, code span.va { color: #cc7832; }  // YAML keys and colons; INI keys
+  code span.at { color: #a9b7c6; }                             // YAML values
+  code span.st, code span.ss, code span.vs { color: #6a8759; }
+  code span.dv, code span.fl, code span.bn, code span.cn { color: #6897bb; }
+  code span.co { color: #808080; font-style: italic; }
+  code span.dt { color: #cc7832; }  // INI keys, same as YAML keys
+}
+.reveal .darcula.sm pre code { font-size: 20.5px; line-height: 1.3; }
+
+// Jupyter-style executed cells: each cell is a card (gray input with accent bar, white output)
+.reveal .jup {
+  background: none; border: 0; box-shadow: none; padding: 0; overflow: visible;
+  .cell { margin: 0 0 18px 0; border: 1px solid #d9dce1; border-radius: 10px; overflow: hidden;
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); background: #fff; }
+  .cell:last-child { margin-bottom: 0; }
+  div.sourceCode { background: #f3f4f6; border: 0; border-left: 5px solid $accent; border-radius: 0; margin: 0; }
+  div.sourceCode pre { margin: 0; box-shadow: none; }
+  pre code { font-size: 21px; line-height: 1.38; padding: 12px 18px; max-height: none; overflow: hidden; white-space: pre; }
+  .cell-output { background: #fff; border-top: 1px solid #e3e5e8; }
+  .cell-output pre { margin: 0; box-shadow: none; }
+  .cell-output pre code { font-size: 19px; line-height: 1.3; color: #444; padding: 10px 18px; background: #fff; white-space: pre-wrap; word-break: break-word; }
+  .cell-output-stderr { display: none; }
+  .cell-output-display { margin: 0; }
+  .cell-output-display p { margin: 2px 18px 8px; font-size: 18px; color: #6b7280; }
+  table { font: 18px/1.3 $font-family-monospace; border-collapse: collapse; margin: 8px 18px; border: 0; }
+  th, td { padding: 2px 12px; text-align: right; border: 0 !important; }
+  thead th { border-bottom: 1px solid #ccc !important; font-weight: 700; }
+  img { display: block; margin: 6px auto; }
+}
+// A green label pinned to the top-right corner of the cell that follows it
+.reveal .cellwrap { position: relative; margin-top: 30px; }
+.reveal .cellwrap > p:first-child { margin: 0; }
+.reveal .cellwrap > p:first-child > .tag { position: absolute; right: 14px; top: -19px; z-index: 2; margin: 0; }
+
+// Key steps: three groups with brackets that span groups
+.reveal .steps {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-areas: "s1 b1" "s2 b1" "s3 b2";
+  column-gap: 40px;
+  row-gap: 34px;
+  font-size: 38px;
+  .s1 { grid-area: s1; } .s2 { grid-area: s2; } .s3 { grid-area: s3; }
+  .b1 { grid-area: b1; } .b2 { grid-area: b2; }
+  .b1, .b2 {
+    border-left: 3px solid #111;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; font-size: 30px; padding-left: 20px; color: #333; text-wrap: balance;
+  }
+  ol > li { margin-bottom: 0; }
+}
+
+// Title slide
+.reveal .big-title { font-size: 112px; font-weight: 700; line-height: 1.1; letter-spacing: -1.5px; }
+.reveal .big-sub { font-size: 52px; font-weight: 700; color: $accent; line-height: 1.4; }
+.reveal .byline { font-size: 40px; font-weight: 700; line-height: 1.5; }
+.reveal .team { font-size: 30px; color: $muted; line-height: 1.5; }
+
+// Slide numbers, small and unobtrusive
+.reveal .slide-number a { text-decoration: none; }
+.reveal .slide-number { font-size: 18px; color: $muted; background: transparent; right: 36px; bottom: 26px; }
+
+// Sampling-chain diagrams: a row of step boxes joined by arrows
+.reveal .chain-label { font-size: 26px; font-weight: 700; color: $muted; margin: 22px 0 10px 0; }
+.reveal .chain > p {
+  display: flex; align-items: stretch; margin: 0; flex-wrap: nowrap;
+}
+.reveal .chain {
+  .step {
+    border-radius: 10px; padding: 10px 16px; font-size: 22px; line-height: 1.25;
+    border: 2px solid #2980b9; background: #dbe9f6; text-align: center; min-width: 120px;
+    display: inline-flex; flex-direction: column; justify-content: center;
+    code { font-weight: 700; font-size: 21px; display: block; margin-bottom: 2px; }
+  }
+  .step.reparam { border-color: #27ae60; background: #e2f0e6; }
+  .step.gibbs { border-color: $step-orange; background: #fbe7d6; }
+  .step.is { border-color: #8e44ad; background: #efe3f6; }
+  .arrow { align-self: center; font-size: 34px; padding: 0 10px; color: #555; }
+}
+.reveal .legend { font-size: 22px; color: $muted; margin-top: 18px; }
+.reveal .legend span.k { display: inline-block; width: 18px; height: 18px; border-radius: 4px; vertical-align: -2px; margin: 0 6px 0 18px; border: 2px solid; }
+
+.reveal .subheads > ul > li { list-style-type: none; margin-left: -44px; }
+.reveal .subheads > ul > li > ul { margin-left: 34px; }
+
+// Notebook map on the final slide
+.reveal table.notebook-map, .reveal .notebook-map table { font-size: 32px; border-collapse: collapse; margin: 0; }
+.reveal .notebook-map th { text-align: left; font-weight: 700; border-bottom: 2px solid #111 !important; padding: 8px 24px 8px 0; }
+.reveal .notebook-map td { padding: 10px 24px 10px 0; border-bottom: 1px solid #e3e3e3 !important; }
+
+// Larger cells where a slide has little code
+.reveal .jup.big pre code { font-size: 24px; }
+.reveal .jup.big .cell-output pre code { font-size: 22px; }
+.reveal .grid2 img { max-height: 740px; width: auto; }
+
+.reveal .chain.tight4 .step { padding: 8px 10px; min-width: 0; font-size: 20px; }
+.reveal .chain.tight4 .step code { font-size: 19px; }
+.reveal .chain.tight4 .arrow { padding: 0 6px; }
+
+// Editor-style file tab on top of a config panel; colored dot marks the train_settings section
+.reveal .panel { min-width: 0; }
+.reveal .panel > p:first-child { margin: 0; line-height: 0; }
+.reveal .filetab {
+  display: inline-block; line-height: 1.2;
+  background: #3c3f41; color: #c9d1d9;
+  font-family: $font-family-monospace; font-size: 18px;
+  padding: 7px 16px 6px 14px; border-radius: 9px 9px 0 0;
+}
+.reveal .panel .darcula { border-top-left-radius: 0; }
+.reveal .filetab.s-data::before, .reveal .filetab.s-model::before, .reveal .filetab.s-training::before,
+.reveal .filetab.s-local::before { content: "●"; margin-right: 9px; }
+.reveal .filetab.s-data::before { color: $step-green; }
+.reveal .filetab.s-model::before { color: $step-orange; }
+.reveal .filetab.s-training::before { color: $step-blue; }
+.reveal .filetab.s-local::before { color: #6aa9e9; }
+.reveal .filetab .note { color: #8b949e; }
+
+// Small numbered procedure (e.g., the chirp-mass scan)
+.reveal .procedure { font-size: 26px; margin-top: 26px; }
+.reveal .procedure .head { font-weight: 700; color: $accent; font-size: 28px; }
+.reveal .procedure ol { margin-top: 8px; }
+.reveal .procedure ol > li { margin-bottom: 6px; }
+
+// Shell commands on the follow-along slide
+.reveal .shell pre code { font-size: 22px !important; }
+
+// Python syntax colors in executed cells (One Light palette; stronger than the default GitHub style)
+.reveal .jup div.sourceCode code {
+  color: #383a42;
+  span { font-style: normal; font-weight: normal; }
+  span.kw, span.cf, span.im { color: #a626a4; font-weight: 600; }  // keywords, control flow, import
+  span.st, span.ss, span.vs, span.ch { color: #50a14f; }           // strings
+  span.dv, span.fl, span.bn, span.cn { color: #c18401; }           // numbers, constants (True/False/None)
+  span.bu { color: #0184bc; }                                         // builtins (dict, len, ...)
+  span.fu { color: #4078f2; }                                         // functions
+  span.co { color: #a0a1a7; font-style: italic; }                     // comments
+  span.op { color: #383a42; }
+  span.at, span.va { color: #e45649; }
+  span.sc { color: #0184bc; }
+}
