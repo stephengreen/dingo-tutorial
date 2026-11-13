@@ -1,8 +1,8 @@
 name: Slides
 
-# Builds the Quarto slides in slides/ from the frozen outputs in slides/_freeze/
-# (no Python or dingo needed). The HTML is uploaded as an artifact on every run and,
-# if the repository variable DEPLOY_PAGES is "true", published to GitHub Pages.
+# Builds every Quarto deck in slides/<deck>/ from its frozen outputs (slides/<deck>/_freeze;
+# no Python or dingo needed) and, if the repository variable DEPLOY_PAGES is "true",
+# publishes it at <pages-url>/<deck>/ with a listing page at <pages-url>/.
 
 on:
   push:
@@ -23,11 +23,21 @@ jobs:
       - uses: quarto-dev/quarto-actions/setup@v2
         with:
           version: 1.10.18
-      - name: Render slides (frozen outputs; no code execution)
-        run: quarto render slides
+      - name: Render decks (frozen outputs; no code execution)
+        run: |
+          mkdir -p site
+          echo '<!doctype html><meta charset="utf-8"><title>DINGO tutorial slides</title>' > site/index.html
+          echo '<h1>DINGO tutorial slides</h1><ul>' >> site/index.html
+          for deck in slides/*/; do
+            name=$(basename "$deck")
+            quarto render "$deck"
+            cp -r "$deck/_output" "site/$name"
+            echo "<li><a href=\"$name/\">$name</a></li>" >> site/index.html
+          done
+          echo '</ul>' >> site/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: slides/_output
+          path: site
 
   deploy:
     if: github.event_name != 'pull_request' && vars.DEPLOY_PAGES == 'true'

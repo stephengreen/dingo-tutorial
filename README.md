@@ -1,13 +1,13 @@
 # Tutorial: Introduction to DINGO
 
-*Tutorial by [Annalena Kofler](https://github.com/annalena-k) ([original repository](https://github.com/annalena-k/tutorial-dingo-introduction)). This fork updates it for `dingo-gw` 0.10.3 and DINGO-T1, and adds the slides of the DINGO tutorial at CCA, Flatiron Institute (November 2026) in [`slides/`](slides/).*
+*Tutorial by [Annalena Kofler](https://github.com/annalena-k) ([original repository](https://github.com/annalena-k/tutorial-dingo-introduction)). This fork updates it for `dingo-gw` 0.10.3 and DINGO-T1, and adds the slides of the DINGO tutorial at CCA, Flatiron Institute (November 2026) in [`slides/cca-2026/`](slides/cca-2026/) (online: <https://stephenrgreen.com/dingo-tutorial/cca-2026/>).*
 
 This tutorial provides a first introduction on how to use the [DINGO package](https://github.com/dingo-gw/dingo) for analyzing gravitational wave data using neural posterior estimation.
 It illustrates at a 2D toy example how to train a DINGO model from scratch in a simplified setting. Furthermore, the tutorial shows how to download and use the pre-trained DINGO-T1 model to analyze an event with different detector configurations. 
 With this tutorial, we hope to help people get started with DINGO easily.
 
 ## Getting started
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/stephengreen/tutorial-dingo-introduction/blob/main/DINGO_Tutorial.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/stephengreen/dingo-tutorial/blob/main/DINGO_Tutorial.ipynb)
 
 To get started quickly, run the tutorial in Google Colab by clicking the button above. 
 

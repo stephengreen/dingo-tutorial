@@ -16,7 +16,7 @@ np.set_printoptions(threshold=6, edgeitems=2, precision=4, linewidth=64)
 pd.set_option("display.max_rows", 6, "display.max_columns", 6, "display.precision", 3)
 # Folder where the notebook was run (its outputs are read here). Only needed when re-executing;
 # the rendered outputs are frozen in _freeze/.
-os.chdir(os.environ.get("DINGO_TUTORIAL_RUN_DIR", ".."))
+os.chdir(os.environ.get("DINGO_TUTORIAL_RUN_DIR", "../.."))  # default: repository root
 import builtins, re
 _print = getattr(builtins, "_orig_print", builtins.print)  # survive kernel reuse
 builtins._orig_print = _print
@@ -126,15 +126,15 @@ Use [Dingo]{.sc} API or INI file
 
 ## Interactive tutorial
 
-[Follow along: <https://github.com/stephengreen/tutorial-dingo-introduction>]{.sub style="font-size: 36px;"}
+[Follow along: <https://github.com/stephengreen/dingo-tutorial>]{.sub style="font-size: 36px;"}
 
 ::: {.body}
 ::: {.grid2 .wide-left}
 ::: {}
 ::: {.darcula .shell}
 ```bash
-git clone https://github.com/stephengreen/tutorial-dingo-introduction
-cd tutorial-dingo-introduction
+git clone https://github.com/stephengreen/dingo-tutorial
+cd dingo-tutorial
 uv sync
 uv run jupyter lab DINGO_Tutorial.ipynb
 ```
@@ -765,7 +765,7 @@ About a minute of CPU time for a GW170817-like event.
 
 ## Interactive tutorial
 
-[<https://github.com/stephengreen/tutorial-dingo-introduction>]{.sub style="font-size: 38px;"}
+[<https://github.com/stephengreen/dingo-tutorial>]{.sub style="font-size: 38px;"}
 
 ::: {.body}
 ::: {.grid2 .wide-left}
