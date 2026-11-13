@@ -162,3 +162,15 @@ cython_debug/
 #.idea/
 
 .DS_Store
+
+# Tutorial outputs (created when running the notebook)
+01_training_data/
+02_training/
+03_inference/
+04_exercise/
+05_pretrained_model/
+
+# Quarto build output (built by CI)
+slides/_output/
+slides/.quarto/
+**/*.quarto_ipynb
