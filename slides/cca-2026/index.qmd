@@ -145,7 +145,8 @@ uv run jupyter lab DINGO_Tutorial.ipynb
 
 ::: {.compact style="margin-top: 36px;"}
 - [uv](https://docs.astral.sh/uv/) installs the versions `dingo-gw` 0.10.3 was tested with, and fetches Python 3.12 if needed. Without uv: `pip` with `constraints.txt` (see README).
-- Section 6 downloads the [Dingo]{.sc}-T1 model (641 MB) from Zenodo: start early.
+- Start now: Section 6 downloads the [Dingo]{.sc}-T1 model (641 MB). The full run takes ~25 min on a laptop CPU, mostly GWOSC data downloads (~14 min) and importance sampling (~7 min).
+- Colab has not been tested with `dingo-gw` 0.10.3.
 - Notebook by Annalena Kofler, updated for `dingo-gw` 0.10.3.
 :::
 :::
@@ -187,6 +188,8 @@ uv run jupyter lab DINGO_Tutorial.ipynb
 ::: {.body}
 ::: {.grid2 .even}
 ::: {.jup .big}
+[Toy dataset from the notebook: $f_\text{max}$ = 256 Hz, uncompressed]{.caption style="margin: 0 0 6px 0; font-size: 22px;"}
+
 ```{python}
 #| output: false
 from dingo.gw.dataset import WaveformDataset
@@ -297,7 +300,7 @@ for k, (lo, hi, ticks) in enumerate([(20.0, 21.5, [20, 20.5, 21]), (300.0, 340.0
 fig.axes[1].set_ylabel(r"$\mathrm{Re}\,h_+$")
 ```
 :::
-[$\Delta f$ doubles in each band: 16,609 → 736 bins. Zooms: uniform (gray) vs. multi-banded (blue) points. For a dataset: `dingo_generate_multibanded_domain`.]{.caption}
+[$\Delta f$ doubles in each band: 16,289 → 736 bins between 20 and 1038 Hz. Zooms: uniform (gray) vs. multi-banded (blue) points. For a dataset: `dingo_generate_multibanded_domain`.]{.caption}
 :::
 :::
 :::
@@ -399,12 +402,24 @@ fig.axes[1].set_ylabel(r"$\mathrm{Re}\,h_+$")
 
 [Overview]{.sub}
 
-::: {.body .center .large}
+::: {.body}
+::: {.grid2 .even}
+::: {}
 - Trained networks for common configurations are on Zenodo (e.g., [Dingo]{.sc}-T1 for O3).
 - Two options for inference:
   - **Sampler API** — useful for injections, experiments
-  - **dingo_pipe** — based on bilby_pipe
-- After inference, typically importance sample to true posterior (default in dingo_pipe).
+  - `dingo_pipe` — based on bilby_pipe
+- After inference, we importance sample to the true posterior (default in `dingo_pipe`).
+:::
+::: {.compact}
+[In practice]{.accent}
+
+- **Training**: a few days on GPUs, once per network.
+- **Inference**: 10,000 [Dingo]{.sc}-T1 samples in ~10 s on a laptop CPU; importance sampling takes minutes (parallelizable).
+- **Fixed by training**: prior, waveform model, noise distribution (observing run), and, for ResNet models, the detectors.
+- **Out-of-distribution data** → low sample efficiency, which importance sampling detects.
+:::
+:::
 :::
 
 ## Inference
@@ -461,6 +476,8 @@ sampler.samples
   - Rejection sampling (unweighted samples)
   - Training new flows based on samples
 - [Stores all precursor settings (e.g., network settings, training, and event data).]{.accent}
+
+[Importance sampling reweights each sample by $w = p(d \mid \theta)\, p(\theta) / q(\theta \mid d)$. The sample efficiency $n_\text{eff}/n$ measures how well the network approximates the posterior: here 0.07%, so importance sampling flags the toy network as poor.]{.caption style="margin-top: 40px;"}
 :::
 ::: {.jup}
 ```{python}
@@ -481,8 +498,6 @@ result.print_summary()
 result.samples[["chirp_mass", "mass_ratio", "weights"]]
 ```
 :::
-
-[The sample efficiency measures how well the network approximates the posterior. The small toy network gets a few percent at best; [Dingo]{.sc}-T1 reaches 9% (H1 + L1) to 47% (H1) on GW190701.]{.caption}
 :::
 :::
 
@@ -499,7 +514,7 @@ result.samples[["chirp_mass", "mass_ratio", "weights"]]
 ::: {.compact}
 - Automates inference tasks, including downloading of GW data. Specified by INI file:
   - **Job submission**
-  - **Sampler:** specify [Dingo]{.sc} models, number of samples, GNPE iterations (Gibbs sampling over detector time shifts), data/prior updates for importance sampling, …
+  - **Sampler:** specify [Dingo]{.sc} models, number of samples, data/prior updates for importance sampling, …
   - **Data generation:** specify GPS time, point to frame files (or gwosc), point to PSDs. [Dingo]{.sc}-T1: choose detectors, frequency range, PSD notches.
   - Optional: **injections**, **calibration marginalization** (with importance sampling), **corner and diagnostic plots**
 - Importance sampling (incl. synthetic phase) runs by default.
@@ -533,8 +548,8 @@ result.samples[["chirp_mass", "mass_ratio", "weights"]]
 - The posterior is an ordered product of conditionals,
   $$q(\theta \mid d) = \prod_i q_i(\theta_i \mid \theta_{<i}, d)$$
 - Each **step** adds parameter columns and a term to $\log\,q$: a flow, a point mass (fixed parameters), a change of variables (sky rotation), the synthetic phase, …
-- Chains are assembled from the model metadata (`from_model`, `from_gnpe_models`), or by hand.
-- $\log\,q$ is tracked through every step, so the result can be importance sampled directly. (A Gibbs block has no density; GNPE needs density recovery first.)
+- Chains are assembled from the model metadata (`from_model`), or by hand.
+- $\log\,q$ is tracked through every step, so the result can be importance sampled directly.
 :::
 ::: {}
 [Plain NPE]{.chain-label}
@@ -549,12 +564,6 @@ result.samples[["chirp_mass", "mass_ratio", "weights"]]
 [`SampleTableFactor` existing samples]{.step}[→]{.arrow}[`SyntheticPhaseFactor` from likelihood]{.step .is}
 :::
 
-[GNPE]{.chain-label}
-
-::: {.chain}
-[`GibbsBlock` init network, then kernel ⇄ flow ×N]{.step .gibbs}[→]{.arrow}[`RAToEventFrame`]{.step .reparam}
-:::
-
 [Binary neutron stars (prior conditioning)]{.chain-label}
 
 ::: {.chain .tight4}
@@ -562,7 +571,7 @@ result.samples[["chirp_mass", "mass_ratio", "weights"]]
 :::
 
 ::: {.legend}
-[]{.k style="background:#dbe9f6;border-color:#2980b9"}factor [ ]{.k style="background:#e2f0e6;border-color:#27ae60"}change of variables [ ]{.k style="background:#efe3f6;border-color:#8e44ad"}uses likelihood [ ]{.k style="background:#fbe7d6;border-color:#e2792e"}Gibbs (no density)
+[]{.k style="background:#dbe9f6;border-color:#2980b9"}factor [ ]{.k style="background:#e2f0e6;border-color:#27ae60"}change of variables [ ]{.k style="background:#efe3f6;border-color:#8e44ad"}uses likelihood
 :::
 :::
 :::
@@ -666,7 +675,7 @@ ax.grid(True, lw=0.6, alpha=0.5); ax.set_xticklabels([]); ax.set_yticklabels([])
 handles = [plt.Line2D([], [], color=style[d]["color"], lw=4, label=style[d]["label"]) for d in style]
 fig.legend(handles=handles, loc="upper center", ncol=2, frameon=False, fontsize=24, bbox_to_anchor=(0.5, 1.02))
 ```
-[GW190701_203306, analyzed by the same network with H1 only and with H1 + L1. Bottom: sky position (importance-resampled samples).]{.caption}
+[GW190701_203306, analyzed by the same network with H1 only (sample efficiency 47%) and with H1 + L1 (9%). Bottom: sky position (importance-resampled samples).]{.caption}
 :::
 :::
 :::
@@ -680,7 +689,7 @@ fig.legend(handles=handles, loc="upper center", ncol=2, frameon=False, fontsize=
 ::: {}
 ::: {.compact}
 - **Training**: `embedding_type: transformer` and a `tokenization` block in the data settings, which sets the masking during training.
-- **Inference**: per event, in the INI file. Ranges must lie within those seen in training.
+- **Inference**: per event, in the INI file. Ranges must lie within those seen in training. The YAML is the example config; the Zenodo model allows raising $f_\text{min}$ up to 180 Hz and lowering $f_\text{max}$ down to 80 Hz.
 :::
 
 ::: {.panel style="margin-top: 40px;"}
@@ -795,7 +804,7 @@ About a minute of CPU time for a GW170817-like event.
 
 : {.notebook-map}
 
-Notebook by Annalena Kofler, updated for `dingo-gw` 0.10.3. The full run takes ~25 min on a laptop CPU.
+Notebook by Annalena Kofler, updated for `dingo-gw` 0.10.3. The full run takes ~25 min on a laptop CPU, mostly data downloads and importance sampling.
 :::
 ::: {}
 ![](images/tutorial_qr.svg){width=400 style="margin-top: 20px;"}
