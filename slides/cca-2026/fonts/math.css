@@ -1,0 +1,6 @@
+/* Latin Modern Math (GUST Font License), the LaTeX look, for native MathML; embedded at render time */
+@font-face {
+  font-family: "Latin Modern Math";
+  src: url("latinmodern-math.otf") format("opentype");
+}
+.reveal math { font-family: "Latin Modern Math", "STIX Two Math", math; font-size: 1.08em; }

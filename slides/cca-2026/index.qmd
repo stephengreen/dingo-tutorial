@@ -414,6 +414,9 @@ fig.axes[1].set_ylabel(r"$\mathrm{Re}\,h_+$")
 ::: {.body}
 ::: {.grid2 .wide-left}
 ::: {.jup}
+::: {.cellwrap}
+[Toy model from the notebook: chirp mass and mass ratio only, 15 epochs]{.tag}
+
 ```{python}
 from dingo.core.posterior_models import build_model_from_kwargs
 from dingo.gw.inference.sampler import GWComposedSampler
@@ -432,6 +435,7 @@ sampler = GWComposedSampler.from_model(model, strain_data)
 sampler.run_sampler(num_samples=10_000, batch_size=5_000)
 sampler.samples
 ```
+:::
 :::
 ::: {.compact}
 1. Load model with `build_model_from_kwargs`
@@ -477,6 +481,8 @@ result.print_summary()
 result.samples[["chirp_mass", "mass_ratio", "weights"]]
 ```
 :::
+
+[The sample efficiency measures how well the network approximates the posterior. The small toy network gets a few percent at best; [Dingo]{.sc}-T1 reaches 9% (H1 + L1) to 47% (H1) on GW190701.]{.caption}
 :::
 :::
 

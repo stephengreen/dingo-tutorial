@@ -1,6 +1,8 @@
 project:
   type: default
   output-dir: _output
+  render:
+    - index.qmd
 
 execute:
   freeze: auto
@@ -11,6 +13,7 @@ execute:
 format:
   revealjs:
     theme: [default, theme.scss]
+    css: fonts/math.css
     width: 1920
     height: 1080
     margin: 0
